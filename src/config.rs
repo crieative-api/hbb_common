@@ -78,7 +78,16 @@ lazy_static::lazy_static! {
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // crieIAtive Desk: DESK_CONN_TYPE=incoming no build gera o "Desk Cliente" (só recebe acesso).
+    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
+        let mut m = HashMap::new();
+        if let Some(t) = option_env!("DESK_CONN_TYPE") {
+            if !t.is_empty() {
+                m.insert("conn-type".to_owned(), t.to_owned());
+            }
+        }
+        RwLock::new(m)
+    };
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
 }
 
